@@ -1,14 +1,28 @@
-
 - hosts: worker1
   become: true
   gather_facts: no
   tasks:
+    - name: Ensure apt cache is updated
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      register: update_result
+      retries: 3
+      delay: 10
+      until: update_result is succeeded
+
     - name: Install Docker
       apt:
         name: docker.io
         state: present
-        update_cache: yes
+        force_apt_get: yes
+      register: install_result
+      retries: 3
+      delay: 15
+      until: install_result is succeeded
+
     - name: Start Docker Service
       service:
         name: docker
         state: started
+        enabled: true
