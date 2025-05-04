@@ -1,6 +1,7 @@
 
 - hosts: worker1
   become: true
+  gather_facts: no
   tasks:
     - name: Install Docker
       apt:
